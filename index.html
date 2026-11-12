@@ -1173,11 +1173,6 @@
         window.onload = function() {
         AOS.init({ duration: 1200, once: true });
 
-        document.getElementById('rsvpForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            this.classList.add('hidden');
-            document.getElementById('thankYouMessage').classList.remove('hidden');
-        });
 
  const pillars = document.querySelectorAll('.color-pillar');
 
@@ -1263,7 +1258,7 @@
             
         });
 
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmsbFc5Lj36qg8hLUpSm5sTnVIZQ7ZMaHEUMeBRysrNfnuD8V01Q-kdsLopA6nosHs/exec"; 
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwxBJpThHtcLqu5qjSJlogDjmd9nEKp6huiTW-nZ21WIpQtmNf_5TUYGGhuhPY3hBVDAw/exec"; 
 
         document.addEventListener('DOMContentLoaded', function() {
             AOS.init({ duration: 1000, once: true });
