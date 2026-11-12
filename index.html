@@ -1136,6 +1136,36 @@
                     </div>
                 </div>
 
+                <!-- Дети -->
+                <div class="space-y-6">
+                    <p class="rounded-text text-2xl text-center leading-relaxed">Придёте ли вы с ребёнком?</p>
+                    <p class="rounded-text text-sm text-center text-stone-500 leading-relaxed -mt-3">Данные ребёнка заполняет один из сопровождающих его взрослых.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <label>
+                            <input type="radio" name="with_child" value="Да, с ребёнком" required>
+                            <div class="option-card">Да, с ребёнком</div>
+                        </label>
+                        <label>
+                            <input type="radio" name="with_child" value="Нет">
+                            <div class="option-card">Нет</div>
+                        </label>
+                    </div>
+
+                    <!-- Появляется, только если выбрано «Да, с ребёнком» -->
+                    <div id="childFields" class="hidden space-y-6">
+                        <div class="space-y-4">
+                            <label class="rounded-text text-xs uppercase tracking-widest text-stone-500 font-bold">Имя ребёнка</label>
+                            <input type="text" name="child_name" id="childName" placeholder="Введите имя ребёнка" autocomplete="off"
+                                class="w-full bg-transparent border-b border-stone-300 p-3 focus:outline-none focus:border-accent-red transition-colors font-medium">
+                        </div>
+                        <div class="space-y-4">
+                            <label class="rounded-text text-xs uppercase tracking-widest text-stone-500 font-bold">Возраст ребёнка</label>
+                            <input type="text" name="child_age" id="childAge" placeholder="Например: 7 лет" inputmode="numeric" autocomplete="off"
+                                class="w-full bg-transparent border-b border-stone-300 p-3 focus:outline-none focus:border-accent-red transition-colors font-medium">
+                        </div>
+                    </div>
+                </div>
+
                 <button type="submit" id="submitBtn"  class="glass-btn w-full text-white py-5 rounded-full uppercase tracking-[0.3em] text-xs font-bold shadow-lg">
                     Отправить анкету
                 </button>
@@ -1258,7 +1288,7 @@
             
         });
 
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyewU7u8yIamAajihxCL3OCc7bCRfJD7sWLSjTDU1TMiau7L27k6k6Xa_Nd5kzhMMRC1g/exec"; 
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPoUk-7pZGWeKzmPAQ1Ye9Id9w8ZYxJVB7OPFlFUpz2tzeA0ToZMiiLtiBXkIz9mG9nQ/exec"; 
 
         document.addEventListener('DOMContentLoaded', function() {
             AOS.init({ duration: 1000, once: true });
@@ -1266,6 +1296,24 @@
             const form = document.getElementById('weddingSurvey');
             const btn = document.getElementById('submitBtn');
             const thanks = document.getElementById('surveyThanks');
+
+            // Поля ребёнка: показываем и делаем обязательными только при ответе «Да, с ребёнком»
+            const childFields = document.getElementById('childFields');
+            const childName = document.getElementById('childName');
+            const childAge = document.getElementById('childAge');
+            function updateChildFields() {
+                const yes = form && form.querySelector('input[name="with_child"]:checked');
+                const show = !!yes && yes.value === 'Да, с ребёнком';
+                childFields.classList.toggle('hidden', !show);
+                childName.required = show;
+                childAge.required = show;
+                if (!show) { childName.value = ''; childAge.value = ''; }
+            }
+            if (form) {
+                form.querySelectorAll('input[name="with_child"]').forEach(function (el) {
+                    el.addEventListener('change', updateChildFields);
+                });
+            }
 
             if (form) {
                 form.addEventListener('submit', function(e) {
@@ -1314,4 +1362,3 @@
     </script>
 </body>
 </html>
-
