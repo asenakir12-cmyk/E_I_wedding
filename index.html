@@ -157,7 +157,10 @@
            Широкий высокий экран: фото по центру, плашка низкой полосой поверх его нижней части. */
         .hero-section {
             --glass-tint: 255, 255, 255;
-            --bg-dark: #5c0120;           /* основа фона: бордовый */
+            --ph: min(62svh, 107.7vw, 620px);   /* высота фото (на телефоне) */
+            /* Фон повторяет цвет краёв фото (сверху вниз), поэтому выглядит его продолжением.
+               Если поменяете фото, подберите цвета: верх, середина, низ краёв фото. */
+            --bg-dark: #330912;
             position: relative;
             width: 100%;
             display: flex;
@@ -166,7 +169,17 @@
             justify-content: flex-start;
             gap: 1.25rem;
             padding: 0 16px 2.25rem;
-            background: var(--bg-dark);
+            background:
+                linear-gradient(to bottom,
+                    #3a0b15 0,
+                    #410e19 calc(var(--ph) * 0.18),
+                    #46111b calc(var(--ph) * 0.34),
+                    #49111a calc(var(--ph) * 0.50),
+                    #4b131d calc(var(--ph) * 0.65),
+                    #410b18 calc(var(--ph) * 0.81),
+                    #3c0a14 calc(var(--ph) * 0.89),
+                    #330912 var(--ph),
+                    #330912 100%);
             overflow: hidden;
             isolation: isolate;
         }
@@ -184,10 +197,16 @@
             display: block;
             flex: none;
             aspect-ratio: 676 / 728;                 /* пропорции photo7.jpg */
-            height: min(62vh, 107.7vw, 620px);       /* на телефоне фото во всю ширину */
-            height: min(62svh, 107.7vw, 620px);
+            height: var(--ph);       /* на телефоне фото во всю ширину */
             margin: 0 -16px;
             background: url('photo7.jpg?v=3') center / cover no-repeat;
+        }
+        /* телефон: самый нижний край фото мягко уходит в фон (виден только по бокам от плашки) */
+        @media (max-width: 599px) {
+            .hero-section::after {
+                -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 22px), transparent 100%);
+                mask-image: linear-gradient(to bottom, #000 calc(100% - 22px), transparent 100%);
+            }
         }
         /* плашка налезает на нижнюю часть фото */
         .hero-glass { margin-top: -5.5rem; }
@@ -268,7 +287,7 @@
         /* Широкий и достаточно высокий экран: фото по центру во всю высоту,
            плашка — низкая полоса внизу: она закрывает только одежду, лица остаются открыты */
         @media (min-width: 900px) and (min-height: 620px) {
-            .hero-section { min-height: 100vh; min-height: 100svh; justify-content: flex-end; padding: 0 0 4.5vh; gap: 0; }
+            .hero-section { --ph: 100svh; min-height: 100vh; min-height: 100svh; justify-content: flex-end; padding: 0 0 4.5vh; gap: 0; }
             .hero-section::after {
                 position: absolute;
                 order: 0;
