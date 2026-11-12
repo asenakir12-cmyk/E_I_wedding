@@ -153,7 +153,7 @@
         /* ============ ГЛАВНЫЙ ЭКРАН ============ */
         /* Фон — однотонный бордовый. Само фото (photo7) небольшое,
            поэтому показано целиком и чётко, края плавно растворяются в фоне.
-           Телефон и низкие экраны: фото сверху, плашка под ним, ничего не перекрывается.
+           Телефон и низкие экраны: фото сверху, плашка налезает на его нижнюю часть (лица остаются открыты).
            Широкий высокий экран: фото по центру, плашка низкой полосой поверх его нижней части. */
         .hero-section {
             --glass-tint: 255, 255, 255;
@@ -188,21 +188,15 @@
             height: min(62svh, 107.7vw, 620px);
             margin: 0 -16px;
             background: url('photo7.jpg?v=3') center / cover no-repeat;
-            -webkit-mask-image: linear-gradient(to bottom, #000 74%, transparent 100%);
-            mask-image: linear-gradient(to bottom, #000 74%, transparent 100%);
         }
+        /* плашка налезает на нижнюю часть фото */
+        .hero-glass { margin-top: -5.5rem; }
 
         /* Планшет: у фото растворяются ещё и боковые края */
         @media (min-width: 600px) {
             .hero-section::after {
-                -webkit-mask-image:
-                    linear-gradient(to bottom, #000 74%, transparent 100%),
-                    linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
-                mask-image:
-                    linear-gradient(to bottom, #000 74%, transparent 100%),
-                    linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
-                -webkit-mask-composite: source-in;
-                mask-composite: intersect;
+                -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
+                mask-image: linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%);
             }
         }
 
@@ -289,6 +283,7 @@
                 mask-composite: add;
             }
             .hero-glass {
+                margin-top: 0;
                 width: min(900px, 86vw);
                 max-width: none;
                 padding: 1.1rem 2rem;
