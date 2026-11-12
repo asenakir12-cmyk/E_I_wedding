@@ -987,7 +987,7 @@
                 </div>
                 <h3 class="rounded-text text-xl mb-2">Цветы</h3>
                 <div class="premium-divider"></div>
-                <p class="rounded-text text-sm text-gray-500 font-light leading-relaxed">Ваше присутствие на свадьбе - для нас самый лучший подарок в этот день! Замените пожалуйста цветы на хорошее настроение и на историю нашего с Вами знакомства, чтобы было всем весело и все узнали друг-друга (и нас) получше.</p>
+                <p class="rounded-text text-sm text-gray-500 font-light leading-relaxed">Ваше присутствие на свадьбе - для нас самый лучший подарок в этот день! Замените пожалуйста цветы на хорошее настроение и на историю нашего с Вами знакомства, чтобы было всем весело и все узнали друг друга (и нас) получше.</p>
             </div>
             
             <!-- Карточка 4 -->
@@ -1000,7 +1000,7 @@
                 </div>
                 <h3 class="rounded-text text-xl mb-2">Дети</h3>
                 <div class="premium-divider"></div>
-                <p class="rounded-text text-sm text-gray-500 font-light leading-relaxed">Мы будем рады видеть вас с детками, но учитывайте пожалуйста, что мероприятие рассчитано на возраст 12+.</p>
+                <p class="rounded-text text-sm text-gray-500 font-light leading-relaxed">Мы будем рады видеть Вас с детками, но учитывайте пожалуйста, что мероприятие рассчитано на возраст 12+.</p>
             </div>
 
         </div>
@@ -1279,29 +1279,35 @@
                     const params = new URLSearchParams();
                     formData.forEach((value, key) => params.append(key, value));
 
-                    // Отправляем данные
-                    fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        body: params,
-                        mode: 'no-cors', // Обязательно для Google
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        }
-                    })
-                    .then(() => {
-                        // В режиме no-cors мы не ждем реального ответа 'ok', 
-                        // так как Google его не возвращает браузеру в этом режиме.
-                        // Просто скрываем форму.
+                    // Отправляем данные и читаем ответ скрипта, чтобы видеть реальную ошибку
+                    const showThanks = () => {
                         form.style.display = 'none';
                         thanks.classList.remove('hidden');
                         thanks.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    })
-                    .catch(error => {
-                        console.error('Fetch error:', error);
-                        alert("Произошла ошибка при отправке. Пожалуйста, попробуйте еще раз.");
+                    };
+                    const fail = (msg) => {
+                        alert("Не удалось сохранить анкету. Пожалуйста, попробуйте ещё раз." + (msg ? "\n(" + msg + ")" : ""));
                         btn.disabled = false;
                         btn.innerText = "ОТПРАВИТЬ АНКЕТУ";
-                    });
+                    };
+
+                    fetch(SCRIPT_URL, { method: 'POST', body: params, redirect: 'follow' })
+                        .then(r => r.text())
+                        .then(text => {
+                            let data = null;
+                            try { data = JSON.parse(text); } catch (e) {}
+                            console.log('Ответ скрипта:', text);
+                            if (location.search.indexOf('debug') > -1) alert('Ответ скрипта: ' + text.slice(0, 300));
+                            if (data && data.result === 'ok') { showThanks(); }
+                            else if (data && data.result === 'error') { fail(data.message); }
+                            else { fail('скрипт вернул неожиданный ответ — проверьте доступ «Все» в развёртывании'); }
+                        })
+                        .catch(error => {
+                            // Браузер мог не отдать ответ из-за политики Google, хотя данные дошли
+                            console.warn('Ответ не прочитан:', error);
+                            if (location.search.indexOf('debug') > -1) alert('Ответ не прочитан: ' + error);
+                            showThanks();
+                        });
                 });
             }
         });
